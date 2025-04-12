@@ -41,6 +41,12 @@
             margin-top: 15px;
             border-radius: 5px;
         }
+        .loading {
+            font-size: 16px;
+            font-weight: bold;
+            color: #4CAF50;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -48,6 +54,7 @@
         <h1>Hmar Translator</h1>
         <input type="text" id="search-input" placeholder="Search for a word...">
         <button onclick="searchWord()">Search</button>
+        <div id="loading" class="loading">Searching...</div>
         <div id="result"></div>
     </div>
 
@@ -71,11 +78,18 @@
             const query = document.getElementById('search-input').value.trim();
             if (query.length < 2) return;  // Minimum length for search (e.g., 2 letters)
 
+            // Show loading message
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').innerHTML = ''; // Clear previous results
+
             const normalizedQuery = normalizeText(query);
             const { data, error } = await supabase
                 .from('translations')  // Replace with your actual table name
                 .select('*')
                 .ilike('Word', `%${normalizedQuery}%`);  // Searching for a match in the 'Word' column
+
+            // Hide loading message
+            document.getElementById('loading').style.display = 'none';
 
             if (error) {
                 console.error('Search error:', error);
