@@ -18,11 +18,22 @@
             margin: 0 auto;
         }
         input[type="text"] {
-            width: 100%;
+            width: 80%;
             padding: 10px;
             margin: 10px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
         }
         .result {
             background-color: #e9e9e9;
@@ -35,7 +46,8 @@
 <body>
     <div class="container">
         <h1>Hmar Translator</h1>
-        <input type="text" id="search-input" placeholder="Search for a word..." onkeyup="searchWord()">
+        <input type="text" id="search-input" placeholder="Search for a word...">
+        <button onclick="searchWord()">Search</button>
         <div id="result"></div>
     </div>
 
