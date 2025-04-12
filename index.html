@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hmar Translator</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            background-color: #e9e9e9;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hmar Translator</h1>
+        <input type="text" id="search-input" placeholder="Search for a word..." onkeyup="searchWord()">
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://snyyplcorzuqcepeoopc.supabase.co'; // Your project URL
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNueXlwbGNvcnp1cWNlcGVvb3BjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ0ODM4OTYsImV4cCI6MjA2MDA1OTg5Nn0.iZcwx4rXckSN0zUzSCf2mpb37TXeTlXu1NqF_RfZYNM'; // Your public anon key
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Normalize text (to handle accents and part of speech tags)
+        function normalizeText(text) {
+            return text
+                .toLowerCase()
+                .normalize("NFD")        // separate accents
+                .replace(/[\u0300-\u036f]/g, "") // remove accents
+                .replace(/.*?/g, "") // remove (n), (v), etc.
+                .trim();
+        }
+
+        async function searchWord() {
+            const query = document.getElementById('search-input').value.trim();
+            if (query.length < 2) return;  // Minimum length for search (e.g., 2 letters)
+
+            const normalizedQuery = normalizeText(query);
+            const { data, error } = await supabase
+                .from('translations')  // Replace with your actual table name
+                .select('*')
+                .ilike('Word', `%${normalizedQuery}%`);  // Searching for a match in the 'Word' column
+
+            if (error) {
+                console.error('Search error:', error);
+                return;
+            }
+
+            if (data.length > 0) {
+                displayResults(data);
+            } else {
+                document.getElementById('result').innerHTML = `
+                    <div class="result">
+                        <p>Sorry, the word is not available in our dictionary. Would you like to help add it?</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayResults(data) {
+            let resultHTML = '<div class="result"><h2>Results:</h2>';
+            data.forEach(row => {
+                resultHTML += `<p><strong>${row.Word}</strong>: ${row.Description}</p>`;
+            });
+            resultHTML += '</div>';
+            document.getElementById('result').innerHTML = resultHTML;
+        }
+    </script>
+</body>
+</html>
