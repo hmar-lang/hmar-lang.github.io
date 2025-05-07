@@ -19,18 +19,24 @@ import {
 } from '@/components/ui/card';
 import { Plus, Search, SortAsc, SortDesc } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 
-// Replace the pagination links with buttons
-const PaginationLink = ({ onClick, disabled, children }: { onClick: () => void, disabled: boolean, children: React.ReactNode }) => (
-  <Button 
-    onClick={onClick} 
-    disabled={disabled}
-    variant="outline" 
-    className="px-3 py-2"
-  >
-    {children}
-  </Button>
-);
+// Define types for our data
+interface DictionaryEntry {
+  id: string;
+  word: string;
+  part_of_speech: string;
+  definition: string;
+  created_by: string;
+  created_at: string;
+}
+
+interface User {
+  id: string;
+  username: string;
+  display_name: string;
+}
 
 const partsOfSpeech = [
   { value: 'noun', label: 'Noun' },
@@ -138,7 +144,7 @@ const DictionaryPage = () => {
 
   const handleClearFilters = () => {
     setSearchQuery('');
-    setPartOfSpeechFilter('');
+    setPartOfSpeechFilter(''); // Using empty string for no filter
     setCurrentPage(1);
   };
 
@@ -175,7 +181,7 @@ const DictionaryPage = () => {
               <SelectValue placeholder="Part of speech" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Any</SelectItem>
+              <SelectItem value="">Any</SelectItem> {/* Use empty string for no filter */}
               {partsOfSpeech.map((pos) => (
                 <SelectItem key={pos.value} value={pos.value}>
                   {pos.label}
@@ -266,14 +272,26 @@ const DictionaryPage = () => {
                   <PaginationContent>
                     <PaginationItem>
                       <PaginationPrevious 
-                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))} 
-                        disabled={currentPage === 1}
+                        href="#" 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage(p => Math.max(1, p - 1));
+                        }} 
+                        className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
                       />
                     </PaginationItem>
                     
                     {currentPage > 2 && (
                       <PaginationItem>
-                        <PaginationLink onClick={() => setCurrentPage(1)}>1</PaginationLink>
+                        <PaginationLink 
+                          href="#" 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentPage(1);
+                          }}
+                        >
+                          1
+                        </PaginationLink>
                       </PaginationItem>
                     )}
                     
@@ -285,19 +303,33 @@ const DictionaryPage = () => {
                     
                     {currentPage > 1 && (
                       <PaginationItem>
-                        <PaginationLink onClick={() => setCurrentPage(currentPage - 1)}>
+                        <PaginationLink 
+                          href="#" 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentPage(currentPage - 1);
+                          }}
+                        >
                           {currentPage - 1}
                         </PaginationLink>
                       </PaginationItem>
                     )}
                     
                     <PaginationItem>
-                      <PaginationLink isActive>{currentPage}</PaginationLink>
+                      <PaginationLink href="#" isActive onClick={(e) => e.preventDefault()}>
+                        {currentPage}
+                      </PaginationLink>
                     </PaginationItem>
                     
                     {currentPage < totalPages && (
                       <PaginationItem>
-                        <PaginationLink onClick={() => setCurrentPage(currentPage + 1)}>
+                        <PaginationLink 
+                          href="#" 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentPage(currentPage + 1);
+                          }}
+                        >
                           {currentPage + 1}
                         </PaginationLink>
                       </PaginationItem>
@@ -311,7 +343,13 @@ const DictionaryPage = () => {
                     
                     {currentPage < totalPages - 1 && totalPages > 1 && (
                       <PaginationItem>
-                        <PaginationLink onClick={() => setCurrentPage(totalPages)}>
+                        <PaginationLink 
+                          href="#" 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentPage(totalPages);
+                          }}
+                        >
                           {totalPages}
                         </PaginationLink>
                       </PaginationItem>
@@ -319,8 +357,12 @@ const DictionaryPage = () => {
                     
                     <PaginationItem>
                       <PaginationNext 
-                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} 
-                        disabled={currentPage === totalPages}
+                        href="#" 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage(p => Math.min(totalPages, p + 1));
+                        }} 
+                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
                       />
                     </PaginationItem>
                   </PaginationContent>
