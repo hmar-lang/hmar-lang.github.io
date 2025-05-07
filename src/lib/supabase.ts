@@ -2,17 +2,10 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './database.types';
 
-// These environment variables should be set in the Supabase integration
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Use the direct URL and key from the generated client file
+import { supabase as generatedClient } from '../integrations/supabase/client';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables. Please connect to Supabase using the Lovable integration.');
-}
-
-export const supabase = createClient<Database>(
-  supabaseUrl || '',
-  supabaseAnonKey || ''
-);
+// Export the supabase client from the generated file
+export const supabase = generatedClient;
 
 export type { Database };

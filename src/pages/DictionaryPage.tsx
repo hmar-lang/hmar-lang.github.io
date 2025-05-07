@@ -1,35 +1,36 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { Search, Plus } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
+} from '@/components/ui/card';
+import { Plus, Search, SortAsc, SortDesc } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
-interface DictionaryEntry {
-  id: string;
-  word: string;
-  part_of_speech: string;
-  definition: string;
-  created_by: string;
-  created_at: string;
-}
-
-interface User {
-  id: string;
-  username: string;
-  display_name: string;
-}
+// Replace the pagination links with buttons
+const PaginationLink = ({ onClick, disabled, children }: { onClick: () => void, disabled: boolean, children: React.ReactNode }) => (
+  <Button 
+    onClick={onClick} 
+    disabled={disabled}
+    variant="outline" 
+    className="px-3 py-2"
+  >
+    {children}
+  </Button>
+);
 
 const partsOfSpeech = [
   { value: 'noun', label: 'Noun' },
