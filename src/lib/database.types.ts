@@ -7,40 +7,39 @@ export interface Database {
           id: string;
           username: string;
           display_name: string;
-          name?: string;
-          bio?: string;
-          phone_number?: string;
-          facebook_url?: string;
-          instagram_url?: string;
-          youtube_url?: string;
+          name: string | null;
+          bio: string | null;
+          phone_number: string | null;
+          facebook_url: string | null;
+          instagram_url: string | null;
+          youtube_url: string | null;
           created_at: string;
           updated_at: string;
           is_admin: boolean;
         };
         Insert: {
-          id?: string;
+          id: string;
           username: string;
           display_name: string;
-          name?: string;
-          bio?: string;
-          phone_number?: string;
-          facebook_url?: string;
-          instagram_url?: string;
-          youtube_url?: string;
+          name?: string | null;
+          bio?: string | null;
+          phone_number?: string | null;
+          facebook_url?: string | null;
+          instagram_url?: string | null;
+          youtube_url?: string | null;
           created_at?: string;
           updated_at?: string;
           is_admin?: boolean;
         };
         Update: {
-          id?: string;
           username?: string;
           display_name?: string;
-          name?: string;
-          bio?: string;
-          phone_number?: string;
-          facebook_url?: string;
-          instagram_url?: string;
-          youtube_url?: string;
+          name?: string | null;
+          bio?: string | null;
+          phone_number?: string | null;
+          facebook_url?: string | null;
+          instagram_url?: string | null;
+          youtube_url?: string | null;
           updated_at?: string;
           is_admin?: boolean;
         };
@@ -65,7 +64,6 @@ export interface Database {
           updated_at?: string;
         };
         Update: {
-          id?: string;
           word?: string;
           part_of_speech?: string;
           definition?: string;
@@ -90,13 +88,24 @@ export interface Database {
           updated_at?: string;
         };
         Update: {
-          id?: string;
           title?: string;
           slug?: string;
           content?: string;
           updated_at?: string;
         };
       };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
     };
   };
 }

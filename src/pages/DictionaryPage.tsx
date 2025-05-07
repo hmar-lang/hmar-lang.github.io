@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -20,7 +21,7 @@ import {
 import { Plus, Search, SortAsc, SortDesc } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 
 // Define types for our data
 interface DictionaryEntry {
@@ -56,7 +57,7 @@ const DictionaryPage = () => {
   const [entries, setEntries] = useState<DictionaryEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [partOfSpeechFilter, setPartOfSpeechFilter] = useState<string>('');
+  const [partOfSpeechFilter, setPartOfSpeechFilter] = useState<string>('all');
   const [currentView, setCurrentView] = useState<'all' | 'mine'>('all');
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -79,7 +80,7 @@ const DictionaryPage = () => {
         query = query.ilike('word', `%${searchQuery}%`);
       }
 
-      if (partOfSpeechFilter) {
+      if (partOfSpeechFilter && partOfSpeechFilter !== 'all') {
         query = query.eq('part_of_speech', partOfSpeechFilter);
       }
 
@@ -144,7 +145,7 @@ const DictionaryPage = () => {
 
   const handleClearFilters = () => {
     setSearchQuery('');
-    setPartOfSpeechFilter(''); // Using empty string for no filter
+    setPartOfSpeechFilter('all');
     setCurrentPage(1);
   };
 
@@ -181,7 +182,7 @@ const DictionaryPage = () => {
               <SelectValue placeholder="Part of speech" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Any</SelectItem> {/* Use empty string for no filter */}
+              <SelectItem value="all">Any</SelectItem>
               {partsOfSpeech.map((pos) => (
                 <SelectItem key={pos.value} value={pos.value}>
                   {pos.label}
@@ -191,7 +192,7 @@ const DictionaryPage = () => {
           </Select>
           
           <Button type="submit">Search</Button>
-          {(searchQuery || partOfSpeechFilter) && (
+          {(searchQuery || partOfSpeechFilter !== 'all') && (
             <Button variant="ghost" type="button" onClick={handleClearFilters}>
               Clear Filters
             </Button>
@@ -283,15 +284,14 @@ const DictionaryPage = () => {
                     
                     {currentPage > 2 && (
                       <PaginationItem>
-                        <PaginationLink 
-                          href="#" 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setCurrentPage(1);
-                          }}
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => setCurrentPage(1)}
                         >
                           1
-                        </PaginationLink>
+                        </Button>
                       </PaginationItem>
                     )}
                     
@@ -303,35 +303,38 @@ const DictionaryPage = () => {
                     
                     {currentPage > 1 && (
                       <PaginationItem>
-                        <PaginationLink 
-                          href="#" 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setCurrentPage(currentPage - 1);
-                          }}
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => setCurrentPage(currentPage - 1)}
                         >
                           {currentPage - 1}
-                        </PaginationLink>
+                        </Button>
                       </PaginationItem>
                     )}
                     
                     <PaginationItem>
-                      <PaginationLink href="#" isActive onClick={(e) => e.preventDefault()}>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 bg-primary text-primary-foreground"
+                        disabled
+                      >
                         {currentPage}
-                      </PaginationLink>
+                      </Button>
                     </PaginationItem>
                     
                     {currentPage < totalPages && (
                       <PaginationItem>
-                        <PaginationLink 
-                          href="#" 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setCurrentPage(currentPage + 1);
-                          }}
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => setCurrentPage(currentPage + 1)}
                         >
                           {currentPage + 1}
-                        </PaginationLink>
+                        </Button>
                       </PaginationItem>
                     )}
                     
@@ -343,15 +346,14 @@ const DictionaryPage = () => {
                     
                     {currentPage < totalPages - 1 && totalPages > 1 && (
                       <PaginationItem>
-                        <PaginationLink 
-                          href="#" 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setCurrentPage(totalPages);
-                          }}
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => setCurrentPage(totalPages)}
                         >
                           {totalPages}
-                        </PaginationLink>
+                        </Button>
                       </PaginationItem>
                     )}
                     
@@ -373,7 +375,7 @@ const DictionaryPage = () => {
         ) : (
           <div className="text-center py-12 bg-gray-50 rounded-lg">
             <p className="text-gray-500 mb-4">
-              {searchQuery || partOfSpeechFilter
+              {searchQuery || partOfSpeechFilter !== 'all'
                 ? "No entries match your search criteria."
                 : currentView === 'mine'
                 ? "You haven't added any entries yet."
