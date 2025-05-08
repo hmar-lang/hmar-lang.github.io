@@ -2,9 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Card,
   CardContent,
@@ -14,6 +11,8 @@ import {
 } from '@/components/ui/card';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
+import ProfileBasicInfo from '@/components/profile/ProfileBasicInfo';
+import ProfileSocialLinks from '@/components/profile/ProfileSocialLinks';
 
 interface UserProfile {
   id: string;
@@ -149,63 +148,15 @@ const Profile = () => {
             <CardTitle>Basic Information</CardTitle>
             <CardDescription>Update your personal information.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  name="username"
-                  value={profile.username}
-                  onChange={handleChange}
-                  disabled
-                />
-                <p className="text-xs text-gray-500">Username cannot be changed.</p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="display_name">Display Name</Label>
-                <Input
-                  id="display_name"
-                  name="display_name"
-                  value={profile.display_name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name (Optional)</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={profile.name || ''}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone_number">Phone Number (Optional)</Label>
-                <Input
-                  id="phone_number"
-                  name="phone_number"
-                  value={profile.phone_number || ''}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="bio">Bio (Optional)</Label>
-              <Textarea
-                id="bio"
-                name="bio"
-                value={profile.bio || ''}
-                onChange={handleChange}
-                rows={4}
-                placeholder="Tell us a bit about yourself"
-              />
-            </div>
+          <CardContent>
+            <ProfileBasicInfo 
+              username={profile.username} 
+              displayName={profile.display_name}
+              name={profile.name}
+              phoneNumber={profile.phone_number}
+              bio={profile.bio}
+              onFieldChange={handleChange}
+            />
           </CardContent>
         </Card>
 
@@ -214,39 +165,13 @@ const Profile = () => {
             <CardTitle>Social Links</CardTitle>
             <CardDescription>Connect your social media profiles.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="facebook_url">Facebook URL (Optional)</Label>
-              <Input
-                id="facebook_url"
-                name="facebook_url"
-                value={profile.facebook_url || ''}
-                onChange={handleChange}
-                placeholder="https://facebook.com/yourusername"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="instagram_url">Instagram URL (Optional)</Label>
-              <Input
-                id="instagram_url"
-                name="instagram_url"
-                value={profile.instagram_url || ''}
-                onChange={handleChange}
-                placeholder="https://instagram.com/yourusername"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="youtube_url">YouTube URL (Optional)</Label>
-              <Input
-                id="youtube_url"
-                name="youtube_url"
-                value={profile.youtube_url || ''}
-                onChange={handleChange}
-                placeholder="https://youtube.com/@yourchannel"
-              />
-            </div>
+          <CardContent>
+            <ProfileSocialLinks
+              facebookUrl={profile.facebook_url}
+              instagramUrl={profile.instagram_url}
+              youtubeUrl={profile.youtube_url}
+              onFieldChange={handleChange}
+            />
           </CardContent>
         </Card>
 
