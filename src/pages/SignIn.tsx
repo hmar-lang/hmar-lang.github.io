@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/components/ui/use-toast';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -22,6 +23,7 @@ const SignIn = () => {
   
   const { signIn } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,10 +31,21 @@ const SignIn = () => {
     setIsSubmitting(true);
     
     try {
+      console.log("Attempting to sign in with:", email);
       await signIn(email, password);
+      toast({
+        title: "Success!",
+        description: "You've successfully signed in",
+      });
       navigate('/');
     } catch (err: any) {
+      console.error("Sign in error:", err);
       setError(err.message || 'Failed to sign in');
+      toast({
+        title: "Sign in failed",
+        description: err.message || 'Invalid email or password',
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
