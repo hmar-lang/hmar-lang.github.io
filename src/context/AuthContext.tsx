@@ -87,7 +87,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
       
       console.log("User profile fetched:", data);
-      setUserProfile(data as UserProfile);
+      if (data) {
+        setUserProfile(data as UserProfile);
+      } else {
+        console.log("No user profile found for:", userId);
+        // Consider creating a default profile here if needed
+      }
     } catch (error) {
       console.error('Error fetching user profile:', error);
     } finally {

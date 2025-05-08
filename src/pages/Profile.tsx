@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
 
 interface UserProfile {
@@ -51,7 +51,11 @@ const Profile = () => {
           .single();
 
         if (error) throw error;
-        setProfile(data as UserProfile);
+        if (data) {
+          setProfile(data as UserProfile);
+        } else {
+          console.log("No profile found for user:", user.id);
+        }
       } catch (error) {
         console.error('Error fetching profile:', error);
         toast({
